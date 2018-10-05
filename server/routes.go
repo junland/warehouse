@@ -20,9 +20,7 @@ func (c *Config) RegisterRoutes() *httprouter.Router {
 	chain := alice.New(c.FileServe, CORS, Recovery)
 
 	// Set the routes for the application.
-	router.Handler("GET", "/", chain.ThenFunc(helloRootHandle))
-	router.Handler("GET", "/hello", chain.ThenFunc(helloGlobalHandle))
-	router.Handler("GET", "/hello/:name", chain.ThenFunc(helloNameHandle))
+	router.Handler("GET", "/assets/*filepath", chain.ThenFunc(c.fileBrowser))
 
 	return router
 }
