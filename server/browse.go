@@ -11,4 +11,6 @@ func (c *Config) fileBrowser(w http.ResponseWriter, r *http.Request) {
 
 	// `path` variable has the beginning path stripped out.
 	path := ps.ByName("filepath")
+
+	if 
 }

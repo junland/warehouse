@@ -13,13 +13,14 @@ import (
 
 // Config struct provides configuration fields for the server.
 type Config struct {
-	LogLvl string
-	Access bool
-	Port   string
-	PID    string
-	TLS    bool
-	Cert   string
-	Key    string
+	LogLvl    string
+	Access    bool
+	Port      string
+	PID       string
+	TLS       bool
+	Cert      string
+	Key       string
+	AssetsDir string
 }
 
 var stop = make(chan os.Signal)

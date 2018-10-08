@@ -18,6 +18,14 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/olebedev/config",
+			"repository": "https://github.com/olebedev/config",
+			"vcs": "git",
+			"revision": "57f804269e64d41bfe46efb76232c47f49d40902",
+			"branch": "master",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/sirupsen/logrus",
 			"repository": "https://github.com/sirupsen/logrus",
 			"vcs": "git",
