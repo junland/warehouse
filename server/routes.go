@@ -17,10 +17,10 @@ func (c *Config) RegisterRoutes() *httprouter.Router {
 	router.HandleOPTIONS = true
 	router.RedirectTrailingSlash = true
 
-	chain := alice.New(c.FileServe, CORS, Recovery)
+	chain := alice.New(CORS, Recovery)
 
 	// Set the routes for the application.
-	router.Handler("GET", "/assets/*filepath", chain.ThenFunc(c.fileBrowser))
+	router.Handler("GET", "/assets/*filepath", chain.ThenFunc(c.fileServerHandler))
 
 	return router
 }

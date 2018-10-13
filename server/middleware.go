@@ -6,8 +6,6 @@ import (
 	"net/http"
 	"strings"
 	"time"
-
-	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -96,14 +94,6 @@ func (w *LogRequest) Write(b []byte) (int, error) {
 	n, err := w.ResponseWriter.Write(b)
 	w.ResponseBytes += n
 	return n, err
-}
-
-// SimpleMiddleware is just an example logging middleware.
-func (c *Config) FileServe(h http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Info("This is a simple middleware.", c.PID)
-		h.ServeHTTP(w, r)
-	})
 }
 
 // Recovery function handles the logging of panics if the web server encounters a error.

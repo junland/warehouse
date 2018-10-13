@@ -13,13 +13,44 @@ var BinVersion string
 // GoVersion Describes Go version that was used to build the binary.
 var GoVersion string
 
+// Default parameters when program starts without flags or environment variables.
+const (
+	defLvl      = "debug"
+	defAccess   = true
+	defPort     = "8080"
+	defPID      = "/var/run/WAREHOUSE.pid"
+	defTLS      = false
+	defCert     = ""
+	defKey      = ""
+	defAssetDir = "./"
+	defRPMDir   = "./"
+)
+
 var (
-	version, help bool
+	confLogLvl, confPort, confPID, confCert, confKey, confAssetsDir, confRPMsDir, confTmpl string
+	enableTLS, enableAccess, version, help                                                 bool
 )
 
 // init defines configuration flags and environment variables.
 func init() {
 	flags := flag.CommandLine
+
+	// Server configuration
+	flags.StringVar(&confLogLvl, "log-level", GetEnvString("WAREHOUSE_LOG_LEVEL", defLvl), "Specify log level for output.")
+	flags.BoolVar(&enableAccess, "access-log", GetEnvBool("WAREHOUSE_ACCESS_LOG", defAccess), "Specify weather to run with or without HTTP access logs.")
+	flags.StringVar(&confPort, "port", GetEnvString("WAREHOUSE_SERVER_PORT", defPort), "Starting server port.")
+	flags.StringVar(&confPID, "pid-file", GetEnvString("WAREHOUSE_SERVER_PID", defPID), "Specify server PID file path.")
+	flags.StringVar(&confTmpl, "tmpl-file", GetEnvString("WAREHOUSE_TMPL", ""), "Specify a template file for the global file browser.")
+
+	// TLS configuration
+	flags.BoolVar(&enableTLS, "tls", GetEnvBool("WAREHOUSE_TLS", defTLS), "Specify weather to run server in secure mode.")
+	flags.StringVar(&confCert, "tls-cert", GetEnvString("WAREHOUSE_TLS_CERT", defCert), "Specify TLS certificate file path.")
+	flags.StringVar(&confKey, "tls-key", GetEnvString("WAREHOUSE_TLS_KEY", defKey), "Specify TLS key file path.")
+
+	// Dir configuration
+	flags.StringVar(&confAssetsDir, "asset-dir", GetEnvString("WAREHOUSE_ASSET_DIR", defAssetDir), "Specify path for generic assets.")
+	flags.StringVar(&confRPMsDir, "rpm-dir", GetEnvString("WAREHOUSE_RPM_DIR", ""), "Specify path for rpm packages.")
+
 	flags.BoolVarP(&help, "help", "h", false, "Show this help")
 	flags.BoolVar(&version, "version", false, "Display version information")
 	flags.SortFlags = false
@@ -58,7 +89,18 @@ func Run() {
 		return
 	}
 
-	envconfig := GetEnvConf()
+	config := server.Config{
+		LogLvl:    confLogLvl,
+		Access:    enableAccess,
+		Port:      confPort,
+		PID:       confPID,
+		TLS:       enableTLS,
+		Cert:      confCert,
+		Key:       confKey,
+		AssetsDir: confAssetsDir,
+		RPMsDir:   confRPMsDir,
+		Template:  confTmpl,
+	}
 
-	server.Start(envconfig)
+	server.Start(config)
 }

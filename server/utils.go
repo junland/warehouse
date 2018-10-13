@@ -2,8 +2,12 @@ package server
 
 import (
 	"fmt"
+	"html/template"
+	"io"
 	"io/ioutil"
+	"net/http"
 	"os"
+	"path/filepath"
 	"strconv"
 	"syscall"
 
@@ -74,4 +78,103 @@ func (pf *Pidfile) RemovePID() {
 		log.Error("pidfile: failed to remove ", err)
 	}
 	log.Debug("PID file removed...")
+}
+
+// IsFile checks if a specified file is actually a file.
+func IsFile(path string) (bool, error) {
+	fi, err := os.Stat(path)
+	if err != nil {
+		return false, err
+	}
+	return fi.Mode().IsRegular(), err
+}
+
+// IsDir checks if a specified file is actually a directory.
+func IsDir(path string) (bool, error) {
+	fi, err := os.Stat(path)
+	if err != nil {
+		return false, err
+	}
+	return fi.Mode().IsDir(), err
+}
+
+// SetHeaderForFile sets the `Content-Type` header for a file extension for a file.
+func SetHeaderForFile(w http.ResponseWriter, file string) {
+	switch ext := filepath.Ext(file); ext {
+	case ".rpm":
+		w.Header().Set("Content-Type", "application/x-rpm")
+	default:
+		w.Header().Set("Content-Type", "application/file")
+	}
+}
+
+// DirList lists the information about files inside a directory.
+func DirList(file string) (Listing, error) {
+	var list []FileInfo
+
+	log.Debugf("Looking up dir: %s", file)
+	f, err := os.Open(file)
+	if err != nil {
+		return Listing{}, err
+	}
+	fi, err := f.Stat()
+	defer f.Close()
+
+	if fi.IsDir() {
+		files, err := ioutil.ReadDir(file)
+		if err != nil {
+			return Listing{}, err
+		}
+
+		// Start going thru each file and do stuff.
+		for _, f := range files {
+			// file name
+			name := f.Name()
+			if f.IsDir() {
+				name += "/"
+			}
+
+			// file size
+			size := f.Size()
+
+			// file last mod time
+			mod := f.ModTime().Format("2006-01-02 15:04")
+
+			list = append(list, FileInfo{Name: name, Size: size, LastMod: mod})
+		}
+		return Listing{Items: list}, nil
+	}
+
+	return Listing{}, fmt.Errorf("%s is not a directory", fi)
+}
+
+// ParseAndExecuteTmpl parses and executes a template.
+func ParseAndExecuteTmpl(wr io.Writer, file string, fallback string, data interface{}) error {
+	t := template.New("tmpl")
+
+	if file == "" {
+		t, err := t.Parse(fallback)
+		if err != nil {
+			return err
+		}
+		t.Execute(wr, data)
+		return nil
+	}
+
+	file, err := filepath.Abs(file)
+	if err != nil {
+		return err
+	}
+
+	fdat, err := ioutil.ReadFile(file)
+	if err != nil {
+		return err
+	}
+
+	t, err = t.Parse(string(fdat))
+	if err != nil {
+		return err
+	}
+	t.Execute(wr, data)
+	return nil
 }

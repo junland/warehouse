@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -21,6 +22,8 @@ type Config struct {
 	Cert      string
 	Key       string
 	AssetsDir string
+	RPMsDir   string
+	Template  string
 }
 
 var stop = make(chan os.Signal)
@@ -36,9 +39,14 @@ func Start(c Config) error {
 		log.SetLevel(envLvl)
 	}
 
+	err = c.CheckServeDirs()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	if c.TLS == true {
 		if c.Cert == "" || c.Key == "" {
-			log.Fatal("Invalid TLS configuration, please pass a file path for both SLED_KEY and SLED_CERT")
+			log.Fatal("Invalid TLS configuration, please pass a file path for both the key and certificate.")
 		}
 	}
 
@@ -85,6 +93,24 @@ func Start(c Config) error {
 
 	if err := srv.Shutdown(ctx); err != nil {
 		log.Fatal(err)
+	}
+
+	return nil
+}
+
+func (c *Config) CheckServeDirs() error {
+	dirs := map[string]string{"assets": c.AssetsDir}
+
+	log.Debugf("Checking dirs: ", dirs)
+	for k, v := range dirs {
+		v, err := filepath.Abs(v)
+		if err != nil {
+			return fmt.Errorf("could not parse path of %s ", v)
+		}
+		_, err = IsDir(v)
+		if err != nil {
+			return fmt.Errorf("%s is not a directory for configuring the %s server", v, k)
+		}
 	}
 
 	return nil
