@@ -99,17 +99,22 @@ func Start(c Config) error {
 }
 
 func (c *Config) CheckServeDirs() error {
-	dirs := map[string]string{"assets": c.AssetsDir}
+	dirs := map[string]string{"assets": c.AssetsDir, "rpms": c.RPMsDir}
 
-	log.Debugf("Checking dirs: ", dirs)
+	log.Debugln("Checking dirs: ", dirs)
 	for k, v := range dirs {
+		if v == "" {
+			log.Infof("Route for %s not configured...", k)
+			continue
+		}
+
 		v, err := filepath.Abs(v)
 		if err != nil {
 			return fmt.Errorf("could not parse path of %s ", v)
 		}
 		_, err = IsDir(v)
 		if err != nil {
-			return fmt.Errorf("%s is not a directory for configuring the %s server", v, k)
+			return fmt.Errorf("%s is not a directory for configuring the %s file server route, please check your configuration", v, k)
 		}
 	}
 

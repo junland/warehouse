@@ -1,22 +1,46 @@
 # Warehouse
 
-A simple boiler-plate for web apps.
+File and binary distribution service for people.
+
+Warehouse tries to be a simple file server targeting distrbution of assets (CSS, Javascript, Pictures, etc.) and Unix / Linux operating system binary packages (RPM, DEB, IPK etc.). This simpliciaty enables developers or operations to deploy a simple file server over there existing pacakge or assets directory which will provide a clean interface to pull down assets or packages to devices. 
 
 ## Features
 
-* Simple layout. No frameworks. Little abstraction.
+* Brandable file browser with custom JS, HTML, and CSS.
 
-* Modular (Easy to swap out logger, router, and middleware.)
+* Server binary under 10MiB.
 
-* Tries to adhere to the 12 factor application paradigm.
+* 
 
-* TLS Enabled. (Make sure to generate your key and cert.)
+* Simple API to track downloads of files / packages. (Coming Soon!)
+
+## Building
+
+Binaries require Go (1.9 or newer) and Git. To build follow the instructions below:
+
+1. Download the source and place it in your `GOPATH`.
+2. Change directories into the source.
+3. Run `go build`
+
+You can also use the `Makefile` included in the source to build it.
 
 ## Getting started
 
-_Binary will only run on non-Windows systems, it's best if you use `MacOS`, `BSD`, or `Linux` for development and deployment._
+To start serveing files from your current working directory, execute:
 
-To start 
+```
+warehouse
+```
+
+Now you can look thru your directory under `http://localhost:8080/assets`.
+
+To configure the server further issue this command:
+
+```
+warehouse --help
+```
+
+From there you can look thru the options to configure more directories.
 
 ## Built With
 
@@ -45,6 +69,12 @@ Code is licensed under GPLv2 which can be viewed in the `LICENSE` file.
 _Please let me know through the issues tracker if you have any questions._
 
 ## TODO / Notes
+
+* Not production ready.
+
+* API integration.
+
+* Write tests.
 
 * Check issues list for more information.
 

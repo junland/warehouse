@@ -61,7 +61,7 @@ func init() {
 func PrintHelp() {
 	fmt.Printf("Usage: warehouse [options] <command> [<args>]\n")
 	fmt.Printf("\n")
-	fmt.Printf(" Binary distribution service for people .\n")
+	fmt.Printf("File and binary distribution service for people.\n")
 	fmt.Printf("\n")
 	fmt.Printf("Options:\n")
 	flag.PrintDefaults()

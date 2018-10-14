@@ -19,8 +19,13 @@ func (c *Config) RegisterRoutes() *httprouter.Router {
 
 	chain := alice.New(CORS, Recovery)
 
-	// Set the routes for the application.
+	// Set the asset route, this will be the default fileserver.
 	router.Handler("GET", "/assets/*filepath", chain.ThenFunc(c.fileServerHandler))
+
+	// Set optional routes.
+	if c.RPMsDir != "" {
+		router.Handler("GET", "/rpm/*filepath", chain.ThenFunc(c.fileServerHandler))
+	}
 
 	return router
 }
