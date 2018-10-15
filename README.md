@@ -1,4 +1,4 @@
-# Warehouse [![Build Status](https://travis-ci.org/junland/warehouse.svg?branch=master)](https://travis-ci.org/junland/warehouse)
+# Warehouse [![Build Status](https://travis-ci.org/junland/warehouse.svg?branch=master)](https://travis-ci.org/junland/warehouse) [![GolangCI](https://golangci.com/badges/github.com/junland/warehouse.svg)](https://golangci.com)
 
 File and binary distribution service for people.
 
