@@ -1,4 +1,4 @@
-# Warehouse
+# Warehouse [![Build Status](https://travis-ci.org/junland/warehouse.svg?branch=master)](https://travis-ci.org/junland/warehouse)
 
 File and binary distribution service for people.
 
