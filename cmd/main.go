@@ -15,30 +15,42 @@ var GoVersion string
 
 // Default parameters when program starts without flags or environment variables.
 const (
-	defLvl    = "info"
-	defAccess = true
-	defPort   = "8080"
-	defPID    = "/var/run/warehouse.pid"
-	defTLS    = false
-	defCert   = ""
-	defKey    = ""
+	defLvl      = "debug"
+	defAccess   = true
+	defPort     = "8080"
+	defPID      = "/var/run/WAREHOUSE.pid"
+	defTLS      = false
+	defCert     = ""
+	defKey      = ""
+	defAssetDir = "./"
+	defRPMDir   = "./"
 )
 
 var (
-	confLogLvl, confPort, confPID, confCert, confKey string
-	enableTLS, enableAccess, version, help           bool
+	confLogLvl, confPort, confPID, confCert, confKey, confAssetsDir, confRPMsDir, confTmpl string
+	enableTLS, enableAccess, version, help                                                 bool
 )
 
 // init defines configuration flags and environment variables.
 func init() {
 	flags := flag.CommandLine
+
+	// Server configuration
 	flags.StringVar(&confLogLvl, "log-level", GetEnvString("WAREHOUSE_LOG_LEVEL", defLvl), "Specify log level for output.")
 	flags.BoolVar(&enableAccess, "access-log", GetEnvBool("WAREHOUSE_ACCESS_LOG", defAccess), "Specify weather to run with or without HTTP access logs.")
 	flags.StringVar(&confPort, "port", GetEnvString("WAREHOUSE_SERVER_PORT", defPort), "Starting server port.")
 	flags.StringVar(&confPID, "pid-file", GetEnvString("WAREHOUSE_SERVER_PID", defPID), "Specify server PID file path.")
+	flags.StringVar(&confTmpl, "tmpl-file", GetEnvString("WAREHOUSE_TMPL", ""), "Specify a template file for the global file browser.")
+
+	// TLS configuration
 	flags.BoolVar(&enableTLS, "tls", GetEnvBool("WAREHOUSE_TLS", defTLS), "Specify weather to run server in secure mode.")
 	flags.StringVar(&confCert, "tls-cert", GetEnvString("WAREHOUSE_TLS_CERT", defCert), "Specify TLS certificate file path.")
 	flags.StringVar(&confKey, "tls-key", GetEnvString("WAREHOUSE_TLS_KEY", defKey), "Specify TLS key file path.")
+
+	// Dir configuration
+	flags.StringVar(&confAssetsDir, "asset-dir", GetEnvString("WAREHOUSE_ASSET_DIR", defAssetDir), "Specify path for generic assets.")
+	flags.StringVar(&confRPMsDir, "rpm-dir", GetEnvString("WAREHOUSE_RPM_DIR", ""), "Specify path for rpm packages.")
+
 	flags.BoolVarP(&help, "help", "h", false, "Show this help")
 	flags.BoolVar(&version, "version", false, "Display version information")
 	flags.SortFlags = false
@@ -49,7 +61,7 @@ func init() {
 func PrintHelp() {
 	fmt.Printf("Usage: warehouse [options] <command> [<args>]\n")
 	fmt.Printf("\n")
-	fmt.Printf(" Binary distribution service for people .\n")
+	fmt.Printf("File and binary distribution service for people.\n")
 	fmt.Printf("\n")
 	fmt.Printf("Options:\n")
 	flag.PrintDefaults()
@@ -66,15 +78,6 @@ func PrintVersion() {
 
 // Run is the entry point for starting the command line interface.
 func Run() {
-	config := server.Config{
-		LogLvl: confLogLvl,
-		Access: enableAccess,
-		Port:   confPort,
-		PID:    confPID,
-		TLS:    enableTLS,
-		Cert:   confCert,
-		Key:    confKey,
-	}
 
 	if version {
 		PrintVersion()
@@ -84,6 +87,19 @@ func Run() {
 	if help {
 		PrintHelp()
 		return
+	}
+
+	config := server.Config{
+		LogLvl:    confLogLvl,
+		Access:    enableAccess,
+		Port:      confPort,
+		PID:       confPID,
+		TLS:       enableTLS,
+		Cert:      confCert,
+		Key:       confKey,
+		AssetsDir: confAssetsDir,
+		RPMsDir:   confRPMsDir,
+		Template:  confTmpl,
 	}
 
 	server.Start(config)

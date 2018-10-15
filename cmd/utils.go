@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"log"
 	"os"
 )
 
@@ -24,4 +25,11 @@ func GetEnvBool(key string, fallback bool) bool {
 	default:
 		return fallback
 	}
+}
+
+func GetEnvStringReq(key string) string {
+	if s := os.Getenv(key); s != "" {
+		log.Panicf("Please set %s before continuing.", key)
+	}
+	return os.Getenv(key)
 }

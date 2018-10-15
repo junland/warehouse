@@ -48,7 +48,7 @@ tls-certs:
 	@openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout key.pem -out cert.pem -subj "/C=US/ST=Texas/L=Austin/O=Local Development/OU=IT Department/CN=127.0.0.0"
 
 .PHONY: travis-sizes
-travis-sizes:
+travis-sizes: clean fmt
 	@echo "Building unstripped binary..."
 	@go build -o warehouse-raw || (echo "Failed to build binary: $$?"; exit 1)
 	@echo "Size of unstripped binary: $$(ls -l warehouse-raw | awk '{print $$5}') bytes or $$(ls -lh warehouse-raw | awk '{print $$5}')" > ./size-report.txt
@@ -63,17 +63,22 @@ travis-sizes:
 	@cat ./size-report.txt
 	@rm -f ./*.txt
 
+.PHONY: slim-binary
+slim-binary: clean fmt
+	rm -f $(BIN_NAME)
+	go build -ldflags "-s -w -X github.com/junland/warehouse/cmd.BinVersion=$(VERSION) -X github.com/junland/warehouse/cmd.GoVersion=$(GO_VERSION)" -o $(BIN_NAME)
+
 .PHONY: amd64-binary
-amd64-binary:
+amd64-binary: clean fmt
 	rm -f $(BIN_NAME)
 	GOARCH=amd64 go build -ldflags "-X github.com/junland/warehouse/cmd.BinVersion=$(VERSION) -X github.com/junland/warehouse/cmd.GoVersion=$(GO_VERSION)" -o $(BIN_NAME)
 
 .PHONY: aarch64-binary
-aarch64-binary:
+aarch64-binary: clean fmt
 	rm -f $(BIN_NAME)
 	GOARCH=arm64 go build -ldflags "-X github.com/junland/warehouse/cmd.BinVersion=$(VERSION) -X github.com/junland/warehouse/cmd.GoVersion=$(GO_VERSION)" -o $(BIN_NAME)
 
 .PHONY: armhf-binary
-armhf-binary:
+armhf-binary: clean fmt
 	rm -f $(BIN_NAME)
 	GOARCH=arm GOARM=7 go build -ldflags "-X github.com/junland/warehouse/cmd.BinVersion=$(VERSION) -X github.com/junland/warehouse/cmd.GoVersion=$(GO_VERSION)" -o $(BIN_NAME)
