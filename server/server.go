@@ -44,7 +44,7 @@ func Start(c Config) error {
 		log.Fatal(err)
 	}
 
-	if c.TLS == true {
+	if c.TLS {
 		if c.Cert == "" || c.Key == "" {
 			log.Fatal("Invalid TLS configuration, please pass a file path for both the key and certificate.")
 		}
@@ -61,7 +61,7 @@ func Start(c Config) error {
 	log.Debug("Starting server on port ", c.Port)
 
 	go func() {
-		if c.TLS == true {
+		if c.TLS {
 			err := srv.ListenAndServeTLS(c.Cert, c.Key)
 			if err != nil {
 				log.Fatal("ListenAndServeTLS: ", err)

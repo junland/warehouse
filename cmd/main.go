@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/junland/warehouse/server"
 	flag "github.com/spf13/pflag"
@@ -102,5 +103,8 @@ func Run() {
 		Template:  confTmpl,
 	}
 
-	server.Start(config)
+	err := server.Start(config)
+	if err != nil {
+		log.Fatalln(err)
+	}
 }

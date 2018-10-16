@@ -20,7 +20,7 @@ func TestIsDir(t *testing.T) {
 		t.Fatalf("Could not verify directory: %s", err)
 	}
 
-	if dir == false {
+	if !dir {
 		t.Errorf("File is not a directory for some reason")
 	}
 }
@@ -31,7 +31,7 @@ func TestIsFile(t *testing.T) {
 		t.Fatalf("Could not verify file: %s", err)
 	}
 
-	if dir == false {
+	if !dir {
 		t.Errorf("File is not a file for some reason")
 	}
 }

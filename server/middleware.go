@@ -30,7 +30,7 @@ func AccessLogger(handler http.Handler, e bool) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		startTime := time.Now()
 
-		if e != true {
+		if !e {
 			// This should exit the logging handler.
 			return
 		}
