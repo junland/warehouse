@@ -118,6 +118,9 @@ func DirList(file string) (Listing, error) {
 		return Listing{}, err
 	}
 	fi, err := f.Stat()
+	if err != nil {
+		return Listing{}, err
+	}
 	defer f.Close()
 
 	if fi.IsDir() {

@@ -1,6 +1,7 @@
 package server
 
 import (
+	"log"
 	"os"
 	"testing"
 	"time"
@@ -17,7 +18,10 @@ func TestServerShutdown(t *testing.T) {
 	}
 
 	go func() {
-		Start(config)
+		err := Start(config)
+		if err != nil {
+			log.Fatalln(err)
+		}
 	}()
 
 	time.Sleep(2 * time.Second)
