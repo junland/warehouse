@@ -29,7 +29,7 @@
 			"importpath": "github.com/sirupsen/logrus",
 			"repository": "https://github.com/sirupsen/logrus",
 			"vcs": "git",
-			"revision": "458213699411cdceb6fd839a3178be49c01fba54",
+			"revision": "680f584d621da87ee04ea659130e149ba9d23cae",
 			"branch": "master",
 			"notests": true
 		},
@@ -45,7 +45,7 @@
 			"importpath": "golang.org/x/crypto/ssh/terminal",
 			"repository": "https://go.googlesource.com/crypto",
 			"vcs": "git",
-			"revision": "a92615f3c49003920a58dedcf32cf55022cefb8d",
+			"revision": "0c41d7ab0a0ee717d4590a44bcb987dfd9e183eb",
 			"branch": "master",
 			"path": "/ssh/terminal",
 			"notests": true

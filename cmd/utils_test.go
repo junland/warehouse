@@ -22,13 +22,13 @@ func TestGetEnvString(t *testing.T) {
 func TestGetEnvBool(t *testing.T) {
 	os.Setenv("TEST_BOOL", "true")
 	value := GetEnvBool("TEST_BOOL", false)
-	if value != true {
+	if !value {
 		t.Errorf("environment variable value is incorrect, got %t", value)
 	}
 
 	os.Setenv("TEST_BOOL", "")
 	value = GetEnvBool("TEST_BOOL", true)
-	if value != true {
+	if !value {
 		t.Errorf("environment variable backup value is incorrect, got %t", value)
 	}
 }
