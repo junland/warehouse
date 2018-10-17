@@ -33,7 +33,7 @@ func Start(c Config) error {
 	// Get log level environment variable.
 	envLvl, err := log.ParseLevel(c.LogLvl)
 	if err != nil {
-		fmt.Println("Invalid log level ", envLvl)
+		log.Error("Invalid log level ", envLvl)
 	} else {
 		// Setup logging with Logrus.
 		log.SetLevel(envLvl)
@@ -92,7 +92,7 @@ func Start(c Config) error {
 	defer cancel()
 
 	if err := srv.Shutdown(ctx); err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("failed to shutdown server %s", err)
 	}
 
 	return nil

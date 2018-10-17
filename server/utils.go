@@ -61,8 +61,15 @@ func CreatePID(name string) *Pidfile {
 
 	log.Debug("Writing PID to PID file...")
 
-	pid := fmt.Sprintf("%d", os.Getpid())
-	file.Write([]byte(pid))
+	_, err = fmt.Fprintf(file, "%d", os.Getpid())
+	if err != nil {
+		log.Error("pidfile: failed to write pid to file ", err)
+	}
+
+	err = file.Close()
+	if err != nil {
+		log.Error("pidfile: failed to close pid file after writing to it ", err)
+	}
 
 	log.Debug("PID creation has been completed...")
 
@@ -160,7 +167,12 @@ func ParseAndExecuteTmpl(wr io.Writer, file string, fallback string, data interf
 		if err != nil {
 			return err
 		}
-		t.Execute(wr, data)
+
+		err = t.Execute(wr, data)
+		if err != nil {
+			return err
+		}
+
 		return nil
 	}
 
@@ -178,6 +190,11 @@ func ParseAndExecuteTmpl(wr io.Writer, file string, fallback string, data interf
 	if err != nil {
 		return err
 	}
-	t.Execute(wr, data)
+
+	err = t.Execute(wr, data)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
