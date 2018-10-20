@@ -29,7 +29,7 @@
 			"importpath": "github.com/sirupsen/logrus",
 			"repository": "https://github.com/sirupsen/logrus",
 			"vcs": "git",
-			"revision": "680f584d621da87ee04ea659130e149ba9d23cae",
+			"revision": "08e90462da344fbb3880e8e47a0ddacc37508579",
 			"branch": "master",
 			"notests": true
 		},
@@ -54,7 +54,7 @@
 			"importpath": "golang.org/x/sys/unix",
 			"repository": "https://go.googlesource.com/sys",
 			"vcs": "git",
-			"revision": "fa43e7bc11baaae89f3f902b2b4d832b68234844",
+			"revision": "8e24a49d80f82323e1c4db1b5da3e0f31171a151",
 			"branch": "master",
 			"path": "/unix",
 			"notests": true
@@ -63,7 +63,7 @@
 			"importpath": "golang.org/x/sys/windows",
 			"repository": "https://go.googlesource.com/sys",
 			"vcs": "git",
-			"revision": "fa43e7bc11baaae89f3f902b2b4d832b68234844",
+			"revision": "8e24a49d80f82323e1c4db1b5da3e0f31171a151",
 			"branch": "master",
 			"path": "windows",
 			"notests": true

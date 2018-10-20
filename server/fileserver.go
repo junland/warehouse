@@ -13,12 +13,14 @@ import (
 
 type FileInfo struct {
 	Name    string
+	Dir     bool
 	Size    int64
 	LastMod string
 }
 
 type Listing struct {
-	Items []FileInfo
+	Directory string
+	Items     []FileInfo
 }
 
 func (c *Config) fileServerHandler(w http.ResponseWriter, r *http.Request) {

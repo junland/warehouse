@@ -111,7 +111,7 @@ func SetHeaderForFile(w http.ResponseWriter, file string) {
 	case ".rpm":
 		w.Header().Set("Content-Type", "application/x-rpm")
 	default:
-		w.Header().Set("Content-Type", "application/file")
+		w.Header().Set("Content-Type", "application/octet-stream")
 	}
 }
 
@@ -144,15 +144,18 @@ func DirList(file string) (Listing, error) {
 				name += "/"
 			}
 
+			// file type
+			dir := f.IsDir()
+
 			// file size
 			size := f.Size()
 
 			// file last mod time
 			mod := f.ModTime().Format("2006-01-02 15:04")
 
-			list = append(list, FileInfo{Name: name, Size: size, LastMod: mod})
+			list = append(list, FileInfo{Name: name, Dir: dir, Size: size, LastMod: mod})
 		}
-		return Listing{Items: list}, nil
+		return Listing{Directory: file, Items: list}, nil
 	}
 
 	return Listing{}, fmt.Errorf("%s is not a directory", fi)
