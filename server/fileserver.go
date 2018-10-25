@@ -2,9 +2,11 @@ package server
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/julienschmidt/httprouter"
@@ -22,6 +24,8 @@ type Listing struct {
 	Directory string
 	Items     []FileInfo
 }
+
+type sortDirNameFirst Listing
 
 func (c *Config) fileServerHandler(w http.ResponseWriter, r *http.Request) {
 	dir, err := c.SetBaseDir(r.URL.Path)
@@ -92,4 +96,72 @@ func (c *Config) SetBaseDir(url string) (string, error) {
 		log.Debugf("Chose default.")
 		return "", fmt.Errorf("could not match %s route to fileserver", urlslice)
 	}
+}
+
+func (l sortDirNameFirst) Len() int      { return len(l.Items) }
+func (l sortDirNameFirst) Swap(i, j int) { l.Items[i], l.Items[j] = l.Items[j], l.Items[i] }
+
+func (l sortDirNameFirst) Less(i, j int) bool {
+
+	// if both are dir or file sort normally
+	if l.Items[i].Dir == l.Items[j].Dir {
+		return strings.ToLower(l.Items[i].Name) < strings.ToLower(l.Items[j].Name)
+	}
+
+	return l.Items[i].Dir
+}
+
+// DirList lists the information about files inside a directory.
+func DirList(file string) (Listing, error) {
+	var list []FileInfo
+
+	log.Debugf("Looking up dir: %s", file)
+	f, err := os.Open(file)
+	if err != nil {
+		return Listing{}, err
+	}
+	fi, err := f.Stat()
+	if err != nil {
+		return Listing{}, err
+	}
+	defer f.Close()
+
+	if fi.IsDir() {
+		files, err := ioutil.ReadDir(file)
+		if err != nil {
+			return Listing{}, err
+		}
+
+		// Start going thru each file and do stuff.
+		for _, f := range files {
+
+			// file name
+			name := f.Name()
+			if f.IsDir() {
+				name += "/"
+			}
+
+			// skip hidden files.
+			if strings.HasPrefix(name, ".") {
+				continue
+			}
+
+			// file type
+			dir := f.IsDir()
+
+			// file size
+			size := f.Size()
+
+			// file last mod time
+			mod := f.ModTime().Format("2006-01-02 15:04")
+
+			list = append(list, FileInfo{Name: name, Dir: dir, Size: size, LastMod: mod})
+		}
+		fmt.Println("Before sort: ", list)
+		sort.Sort(sortDirNameFirst(Listing{Directory: file, Items: list}))
+		fmt.Println("After sort: ", list)
+		return Listing{Directory: file, Items: list}, nil
+	}
+
+	return Listing{}, fmt.Errorf("%s is not a directory", fi)
 }

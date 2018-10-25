@@ -115,52 +115,6 @@ func SetHeaderForFile(w http.ResponseWriter, file string) {
 	}
 }
 
-// DirList lists the information about files inside a directory.
-func DirList(file string) (Listing, error) {
-	var list []FileInfo
-
-	log.Debugf("Looking up dir: %s", file)
-	f, err := os.Open(file)
-	if err != nil {
-		return Listing{}, err
-	}
-	fi, err := f.Stat()
-	if err != nil {
-		return Listing{}, err
-	}
-	defer f.Close()
-
-	if fi.IsDir() {
-		files, err := ioutil.ReadDir(file)
-		if err != nil {
-			return Listing{}, err
-		}
-
-		// Start going thru each file and do stuff.
-		for _, f := range files {
-			// file name
-			name := f.Name()
-			if f.IsDir() {
-				name += "/"
-			}
-
-			// file type
-			dir := f.IsDir()
-
-			// file size
-			size := f.Size()
-
-			// file last mod time
-			mod := f.ModTime().Format("2006-01-02 15:04")
-
-			list = append(list, FileInfo{Name: name, Dir: dir, Size: size, LastMod: mod})
-		}
-		return Listing{Directory: file, Items: list}, nil
-	}
-
-	return Listing{}, fmt.Errorf("%s is not a directory", fi)
-}
-
 // ParseAndExecuteTmpl parses and executes a template.
 func ParseAndExecuteTmpl(wr io.Writer, file string, fallback string, data interface{}) error {
 	t := template.New("tmpl")
