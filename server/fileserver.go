@@ -14,15 +14,17 @@ import (
 )
 
 type FileInfo struct {
-	Name    string
-	Dir     bool
-	Size    int64
-	LastMod string
+	Name      string
+	Dir       bool
+	Size      int64
+	HumanSize string
+	LastMod   string
 }
 
 type Listing struct {
-	Directory string
-	Items     []FileInfo
+	RealPath string
+	RelPath  string
+	Items    []FileInfo
 }
 
 type sortDirNameFirst Listing
@@ -76,6 +78,8 @@ func (c *Config) fileServerHandler(w http.ResponseWriter, r *http.Request) {
 		log.Errorln(err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
+
+	list.RelPath = r.URL.Path
 
 	err = ParseAndExecuteTmpl(w, c.Template, deftmpl, list)
 	if err != nil {
@@ -147,15 +151,18 @@ func DirList(file string) (Listing, error) {
 			// file size
 			size := f.Size()
 
+			// human file size
+			hsize := ByteCountBinary(size)
+
 			// file last mod time
 			mod := f.ModTime().Format("2006-01-02 15:04")
 
-			list = append(list, FileInfo{Name: name, Dir: dir, Size: size, LastMod: mod})
+			list = append(list, FileInfo{Name: name, Dir: dir, Size: size, HumanSize: hsize, LastMod: mod})
 		}
 		fmt.Println("Before sort: ", list)
-		sort.Sort(sortDirNameFirst(Listing{Directory: file, Items: list}))
+		sort.Sort(sortDirNameFirst(Listing{RealPath: file, Items: list}))
 		fmt.Println("After sort: ", list)
-		return Listing{Directory: file, Items: list}, nil
+		return Listing{RealPath: file, Items: list}, nil
 	}
 
 	return Listing{}, fmt.Errorf("%s is not a directory", fi)

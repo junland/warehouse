@@ -12,6 +12,9 @@ const deftmpl = `<!DOCTYPE html>
 </head>
 	<body>
 	 <div class="container">
+	 <div class="col-md-8 col-xs-12 vbottom">
+			<h4>Index of {{.RelPath}}</h4>
+	 </div>
 	 <table class="responsive-table">
 	  <thead>
 	    <tr>
@@ -32,7 +35,7 @@ const deftmpl = `<!DOCTYPE html>
 			 <td><i class="fas fa-file"></i><a href="{{.Name}}"> {{.Name}}</a></td>
 			{{end}}
 	    <td><a>{{.LastMod}}</a></td>
-	    <td><a>{{.Size}}</a></td>
+	    <td><a>{{.HumanSize}}</a></td>
 	  </tr>
 	{{end}}
 	</tbody>
