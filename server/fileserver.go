@@ -101,13 +101,8 @@ func (c *Config) SetBaseDir(url string) (string, error) {
 func (l sortDirNameFirst) Len() int      { return len(l.Items) }
 func (l sortDirNameFirst) Swap(i, j int) { l.Items[i], l.Items[j] = l.Items[j], l.Items[i] }
 
+// Dont worry about cases.
 func (l sortDirNameFirst) Less(i, j int) bool {
-
-	// if both are dir or file sort normally
-	if l.Items[i].Dir == l.Items[j].Dir {
-		return strings.ToLower(l.Items[i].Name) < strings.ToLower(l.Items[j].Name)
-	}
-
 	return l.Items[i].Dir
 }
 
