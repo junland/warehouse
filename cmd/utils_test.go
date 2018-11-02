@@ -32,3 +32,11 @@ func TestGetEnvBool(t *testing.T) {
 		t.Errorf("environment variable backup value is incorrect, got %t", value)
 	}
 }
+
+func TestGetEnvStringReq(t *testing.T) {
+	os.Setenv("TEST_STRING_TWO", "")
+	value := GetEnvStringReq("TEST_STRING_TWO")
+	if value != "" {
+		t.Errorf("environment variable value is not empty, got %s", value)
+	}
+}

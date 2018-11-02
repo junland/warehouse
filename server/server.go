@@ -22,7 +22,8 @@ type Config struct {
 	Cert      string
 	Key       string
 	AssetsDir string
-	RPMsDir   string
+	RPMDir    string
+	DebDir    string
 	Template  string
 }
 
@@ -98,8 +99,9 @@ func Start(c Config) error {
 	return nil
 }
 
+// CheckServeDirs pre-checks user specified directories to make sure that they exist.
 func (c *Config) CheckServeDirs() error {
-	dirs := map[string]string{"assets": c.AssetsDir, "rpms": c.RPMsDir}
+	dirs := map[string]string{"assets": c.AssetsDir, "rpm": c.RPMDir, "deb": c.DebDir}
 
 	log.Debugln("Checking dirs: ", dirs)
 	for k, v := range dirs {

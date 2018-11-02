@@ -13,6 +13,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// FileInfo describes a files attributes.
 type FileInfo struct {
 	Name      string
 	Dir       bool
@@ -21,6 +22,7 @@ type FileInfo struct {
 	LastMod   string
 }
 
+// Listing describs a list of files.
 type Listing struct {
 	RealPath string
 	RelPath  string

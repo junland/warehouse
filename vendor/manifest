@@ -29,7 +29,7 @@
 			"importpath": "github.com/sirupsen/logrus",
 			"repository": "https://github.com/sirupsen/logrus",
 			"vcs": "git",
-			"revision": "fd2308367ebd427ec910c1ac82f3805db3de1918",
+			"revision": "7eeb7b7cbdeb0a582a5b7a1512d91f956f1674aa",
 			"branch": "master",
 			"notests": true
 		},
