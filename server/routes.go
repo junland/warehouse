@@ -23,8 +23,12 @@ func (c *Config) RegisterRoutes() *httprouter.Router {
 	router.Handler("GET", "/assets/*filepath", chain.ThenFunc(c.fileServerHandler))
 
 	// Set optional routes.
-	if c.RPMsDir != "" {
+	if c.RPMDir != "" {
 		router.Handler("GET", "/rpm/*filepath", chain.ThenFunc(c.fileServerHandler))
+	}
+
+	if c.DebDir != "" {
+		router.Handler("GET", "/deb/*filepath", chain.ThenFunc(c.fileServerHandler))
 	}
 
 	return router

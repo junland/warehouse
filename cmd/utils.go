@@ -27,6 +27,7 @@ func GetEnvBool(key string, fallback bool) bool {
 	}
 }
 
+// GetEnvStringReq checks if a key exists for a enviroment variable, if it's empty the program will panic and exit.
 func GetEnvStringReq(key string) string {
 	if s := os.Getenv(key); s != "" {
 		log.Panicf("Please set %s before continuing.", key)

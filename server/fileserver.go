@@ -2,24 +2,34 @@ package server
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
 )
 
+// FileInfo describes a files attributes.
 type FileInfo struct {
-	Name    string
-	Size    int64
-	LastMod string
+	Name      string
+	Dir       bool
+	Size      int64
+	HumanSize string
+	LastMod   string
 }
 
+// Listing describs a list of files.
 type Listing struct {
-	Items []FileInfo
+	RealPath string
+	RelPath  string
+	Items    []FileInfo
 }
+
+type sortDirNameFirst Listing
 
 func (c *Config) fileServerHandler(w http.ResponseWriter, r *http.Request) {
 	dir, err := c.SetBaseDir(r.URL.Path)
@@ -71,6 +81,8 @@ func (c *Config) fileServerHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
+	list.RelPath = r.URL.Path
+
 	err = ParseAndExecuteTmpl(w, c.Template, deftmpl, list)
 	if err != nil {
 		log.Errorln("eeeee: ", err)
@@ -90,4 +102,70 @@ func (c *Config) SetBaseDir(url string) (string, error) {
 		log.Debugf("Chose default.")
 		return "", fmt.Errorf("could not match %s route to fileserver", urlslice)
 	}
+}
+
+func (l sortDirNameFirst) Len() int      { return len(l.Items) }
+func (l sortDirNameFirst) Swap(i, j int) { l.Items[i], l.Items[j] = l.Items[j], l.Items[i] }
+
+// Dont worry about cases.
+func (l sortDirNameFirst) Less(i, j int) bool {
+	return l.Items[i].Dir
+}
+
+// DirList lists the information about files inside a directory.
+func DirList(file string) (Listing, error) {
+	var list []FileInfo
+
+	log.Debugf("Looking up dir: %s", file)
+	f, err := os.Open(file)
+	if err != nil {
+		return Listing{}, err
+	}
+	fi, err := f.Stat()
+	if err != nil {
+		return Listing{}, err
+	}
+	defer f.Close()
+
+	if fi.IsDir() {
+		files, err := ioutil.ReadDir(file)
+		if err != nil {
+			return Listing{}, err
+		}
+
+		// Start going thru each file and do stuff.
+		for _, f := range files {
+
+			// file name
+			name := f.Name()
+			if f.IsDir() {
+				name += "/"
+			}
+
+			// skip hidden files.
+			if strings.HasPrefix(name, ".") {
+				continue
+			}
+
+			// file type
+			dir := f.IsDir()
+
+			// file size
+			size := f.Size()
+
+			// human file size
+			hsize := ByteCountBinary(size)
+
+			// file last mod time
+			mod := f.ModTime().Format("2006-01-02 15:04")
+
+			list = append(list, FileInfo{Name: name, Dir: dir, Size: size, HumanSize: hsize, LastMod: mod})
+		}
+		fmt.Println("Before sort: ", list)
+		sort.Sort(sortDirNameFirst(Listing{RealPath: file, Items: list}))
+		fmt.Println("After sort: ", list)
+		return Listing{RealPath: file, Items: list}, nil
+	}
+
+	return Listing{}, fmt.Errorf("%s is not a directory", fi)
 }

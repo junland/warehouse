@@ -110,52 +110,11 @@ func SetHeaderForFile(w http.ResponseWriter, file string) {
 	switch ext := filepath.Ext(file); ext {
 	case ".rpm":
 		w.Header().Set("Content-Type", "application/x-rpm")
+	case ".deb":
+		w.Header().Set("Content-Type", "application/x-deb")
 	default:
-		w.Header().Set("Content-Type", "application/file")
+		w.Header().Set("Content-Type", "application/octet-stream")
 	}
-}
-
-// DirList lists the information about files inside a directory.
-func DirList(file string) (Listing, error) {
-	var list []FileInfo
-
-	log.Debugf("Looking up dir: %s", file)
-	f, err := os.Open(file)
-	if err != nil {
-		return Listing{}, err
-	}
-	fi, err := f.Stat()
-	if err != nil {
-		return Listing{}, err
-	}
-	defer f.Close()
-
-	if fi.IsDir() {
-		files, err := ioutil.ReadDir(file)
-		if err != nil {
-			return Listing{}, err
-		}
-
-		// Start going thru each file and do stuff.
-		for _, f := range files {
-			// file name
-			name := f.Name()
-			if f.IsDir() {
-				name += "/"
-			}
-
-			// file size
-			size := f.Size()
-
-			// file last mod time
-			mod := f.ModTime().Format("2006-01-02 15:04")
-
-			list = append(list, FileInfo{Name: name, Size: size, LastMod: mod})
-		}
-		return Listing{Items: list}, nil
-	}
-
-	return Listing{}, fmt.Errorf("%s is not a directory", fi)
 }
 
 // ParseAndExecuteTmpl parses and executes a template.
@@ -197,4 +156,18 @@ func ParseAndExecuteTmpl(wr io.Writer, file string, fallback string, data interf
 	}
 
 	return nil
+}
+
+// ByteCountBinary converts bytes to a human readable format
+func ByteCountBinary(b int64) string {
+	const unit = 1024
+	if b < unit {
+		return fmt.Sprintf("%d B", b)
+	}
+	div, exp := int64(unit), 0
+	for n := b / unit; n >= unit; n /= unit {
+		div *= unit
+		exp++
+	}
+	return fmt.Sprintf("%.1f %ciB", float64(b)/float64(div), "KMGTPE"[exp])
 }

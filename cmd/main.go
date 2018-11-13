@@ -28,8 +28,8 @@ const (
 )
 
 var (
-	confLogLvl, confPort, confPID, confCert, confKey, confAssetsDir, confRPMsDir, confTmpl string
-	enableTLS, enableAccess, version, help                                                 bool
+	confLogLvl, confPort, confPID, confCert, confKey, confAssetsDir, confRPMDir, confDebDir, confTmpl string
+	enableTLS, enableAccess, version, help                                                            bool
 )
 
 // init defines configuration flags and environment variables.
@@ -50,7 +50,8 @@ func init() {
 
 	// Dir configuration
 	flags.StringVar(&confAssetsDir, "asset-dir", GetEnvString("WAREHOUSE_ASSET_DIR", defAssetDir), "Specify path for generic assets.")
-	flags.StringVar(&confRPMsDir, "rpm-dir", GetEnvString("WAREHOUSE_RPM_DIR", ""), "Specify path for rpm packages.")
+	flags.StringVar(&confRPMDir, "rpm-dir", GetEnvString("WAREHOUSE_RPM_DIR", ""), "Specify path for rpm packages.")
+	flags.StringVar(&confDebDir, "deb-dir", GetEnvString("WAREHOUSE_DEB_DIR", ""), "Specify path for deb packages.")
 
 	flags.BoolVarP(&help, "help", "h", false, "Show this help")
 	flags.BoolVar(&version, "version", false, "Display version information")
@@ -60,7 +61,7 @@ func init() {
 
 // PrintHelp prints help text.
 func PrintHelp() {
-	fmt.Printf("Usage: warehouse [options] <command> [<args>]\n")
+	fmt.Printf("Usage: warehouse [options] \n")
 	fmt.Printf("\n")
 	fmt.Printf("File and binary distribution service for people.\n")
 	fmt.Printf("\n")
@@ -74,7 +75,7 @@ func PrintVersion() {
 	fmt.Printf("Made with love.\n")
 	fmt.Printf("Version: %s\n", BinVersion)
 	fmt.Printf("Go Version %s\n", GoVersion)
-	fmt.Printf("License: MIT\n")
+	fmt.Printf("License: GPLv2\n")
 }
 
 // Run is the entry point for starting the command line interface.
@@ -99,7 +100,8 @@ func Run() {
 		Cert:      confCert,
 		Key:       confKey,
 		AssetsDir: confAssetsDir,
-		RPMsDir:   confRPMsDir,
+		RPMDir:    confRPMDir,
+		DebDir:    confDebDir,
 		Template:  confTmpl,
 	}
 

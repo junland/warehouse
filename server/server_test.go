@@ -9,12 +9,16 @@ import (
 
 func TestServerShutdown(t *testing.T) {
 	config := Config{
-		LogLvl: "DEBUG",
-		Port:   "0",
-		PID:    "./test-server.pid",
-		TLS:    false,
-		Cert:   "",
-		Key:    "",
+		LogLvl:    "DEBUG",
+		Port:      "0",
+		PID:       "./test-server.pid",
+		TLS:       false,
+		Cert:      "",
+		Key:       "",
+		AssetsDir: "./",
+		RPMDir:    "./",
+		DebDir:    "./",
+		Template:  "",
 	}
 
 	go func() {
