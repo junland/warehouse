@@ -110,6 +110,8 @@ func SetHeaderForFile(w http.ResponseWriter, file string) {
 	switch ext := filepath.Ext(file); ext {
 	case ".rpm":
 		w.Header().Set("Content-Type", "application/x-rpm")
+	case ".deb":
+		w.Header().Set("Content-Type", "application/x-deb")
 	default:
 		w.Header().Set("Content-Type", "application/octet-stream")
 	}

@@ -61,7 +61,7 @@ func init() {
 
 // PrintHelp prints help text.
 func PrintHelp() {
-	fmt.Printf("Usage: warehouse [options] <command> [<args>]\n")
+	fmt.Printf("Usage: warehouse [options] \n")
 	fmt.Printf("\n")
 	fmt.Printf("File and binary distribution service for people.\n")
 	fmt.Printf("\n")
@@ -75,7 +75,7 @@ func PrintVersion() {
 	fmt.Printf("Made with love.\n")
 	fmt.Printf("Version: %s\n", BinVersion)
 	fmt.Printf("Go Version %s\n", GoVersion)
-	fmt.Printf("License: MIT\n")
+	fmt.Printf("License: GPLv2\n")
 }
 
 // Run is the entry point for starting the command line interface.
