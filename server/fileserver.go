@@ -13,6 +13,13 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// Listing describs a list of files.
+type Listing struct {
+	RealPath string
+	RelPath  string
+	Items    []FileInfo
+}
+
 // FileInfo describes a files attributes.
 type FileInfo struct {
 	Name      string
@@ -22,15 +29,9 @@ type FileInfo struct {
 	LastMod   string
 }
 
-// Listing describs a list of files.
-type Listing struct {
-	RealPath string
-	RelPath  string
-	Items    []FileInfo
-}
-
 type sortDirNameFirst Listing
 
+// fileServerHandler is a handler that will display files in HTML to a client.
 func (c *Config) fileServerHandler(w http.ResponseWriter, r *http.Request) {
 	dir, err := c.SetBaseDir(r.URL.Path)
 	if err != nil {

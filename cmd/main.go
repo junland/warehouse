@@ -19,7 +19,7 @@ const (
 	defLvl      = "debug"
 	defAccess   = true
 	defPort     = "8080"
-	defPID      = "/var/run/WAREHOUSE.pid"
+	defPID      = "/var/run/warehouse.pid"
 	defTLS      = false
 	defCert     = ""
 	defKey      = ""
@@ -61,7 +61,7 @@ func init() {
 
 // PrintHelp prints help text.
 func PrintHelp() {
-	fmt.Printf("Usage: warehouse [options] \n")
+	fmt.Printf("Usage: warehouse [flags] \n")
 	fmt.Printf("\n")
 	fmt.Printf("File and binary distribution service for people.\n")
 	fmt.Printf("\n")
