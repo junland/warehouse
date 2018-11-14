@@ -8,7 +8,9 @@ Warehouse tries to be a simple file server targeting distrbution of assets (CSS,
 
 * Brandable file browser with custom JS, HTML, and CSS.
 
-* Server binary under 10MiB.
+* Custom paths for assets, rpm, and deb files.
+
+* Server binary under 10 MiB.
 
 * Simple API to track downloads of files / packages. (Coming Soon!)
 
