@@ -29,7 +29,7 @@ before_install:
 
 before_script:
   - go version
-  - sudo echo "#/bin/bash" > /usr/local/bin/gccgo
+  - sudo echo '#/bin/bash' > /usr/local/bin/gccgo
   - sudo echo "sudo docker run -it junland/gccgo:v1 $@" >> /usr/local/bin/gccgo && sudo chmod /usr/local/bin/gccgo
   - go get -t ./...
 
