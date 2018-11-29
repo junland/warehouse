@@ -19,7 +19,6 @@ go:
 
 before_install:
   - sudo apt-get update -qqy
-  - sudo apt-get dist-upgrade -qqy
   - sudo apt-get autoremove -qqy
   - sudo apt-get install -qqy upx golang-go gccgo
 
