@@ -29,7 +29,6 @@ before_install:
 
 before_script:
   - go version
-  - alias /usr/bin/gccgo="sudo docker run -it junland/gccgo:v1 $@"
   - alias gccgo="sudo docker run -it junland/gccgo:v1 $@"
   - go get -t ./...
 
