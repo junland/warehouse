@@ -59,6 +59,9 @@ travis-sizes: clean fmt
 	@cp ./warehouse-stripped ./warehouse-compressed
 	@upx -9 -q ./warehouse-compressed > /dev/null || (echo "Failed to compress stripped binary: $$?"; exit 1)
 	@echo "Size of compressed stripped binary: $$(ls -l warehouse-compressed | awk '{print $$5}') bytes or $$(ls -lh warehouse-compressed | awk '{print $$5}')" >> ./size-report.txt
+	@echo "Building binary with gccgo..."
+	@go build -compiler gccgo -o warehouse-gccgo
+	@echo "Size of binary compiled with gccgo: $$(ls -l warehouse-gccgo | awk '{print $$5}') bytes or $$(ls -lh warehouse-gccgo | awk '{print $$5}')" > ./size-report.txt
 	@echo "Reported binary sizes for Go version $$(echo -n $$(go version) | grep -o '1\.[0-9|\.]*'): "
 	@cat ./size-report.txt
 	@rm -f ./*.txt
