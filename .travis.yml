@@ -25,13 +25,10 @@ before_install:
   - sudo apt-get update -qqy
   - sudo apt-get autoremove -qqy
   - sudo apt-get install -qqy upx golang-go
-  - sudo docker pull junland/gccgo:v1
-  - sudo echo '#/bin/bash' > ./gccgo
-  - sudo echo "sudo docker run -it junland/gccgo:v1 $@" >> ./gccgo && sudo chmod 777 ./gccgo
 
 before_script:
   - go version
   - go get -t ./...
 
 script:
-  - GCCGO="./gccgo" make travis-sizes
+  - make travis-sizes-nogccgo
