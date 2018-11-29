@@ -1,6 +1,6 @@
 # Env Options
 sudo: required
-dist: trusty
+dist: bionic
 
 # Language Options
 language: go
@@ -13,12 +13,15 @@ go:
   - 1.10.3
   - "1.11"
   - "1.11.1"
+  - "1.11.2"
   - master
   - tip
 
 before_install:
   - sudo apt-get update -qqy
-  - sudo apt-get install -qqy upx golang-go
+  - sudo apt-get dist-upgrade -qqy
+  - sudo apt-get autoremove -qqy
+  - sudo apt-get install -qqy upx golang-go gccgo
 
 before_script:
   - go get -t ./...
