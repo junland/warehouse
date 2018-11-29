@@ -29,8 +29,8 @@ before_install:
 
 before_script:
   - go version
-  - sudo echo "#/bin/bash" > /usr/bin/gccgo
-  - sudo echo "sudo docker run -it junland/gccgo:v1 $@" >> /usr/bin/gccgo && sudo chmod 777 /usr/bin/gccgo
+  - alias /usr/bin/gccgo="sudo docker run -it junland/gccgo:v1 $@"
+  - alias gccgo="sudo docker run -it junland/gccgo:v1 $@"
   - go get -t ./...
 
 script:
