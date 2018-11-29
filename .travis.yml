@@ -25,7 +25,7 @@ before_install:
   - sudo apt-get update -qqy
   - sudo apt-get autoremove -qqy
   - sudo apt-get install -qqy upx golang-go
-  - sudo docker pull junland/gccgo
+  - sudo docker pull junland/gccgo:v1
 
 before_script:
   - go version
