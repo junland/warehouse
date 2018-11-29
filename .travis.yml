@@ -5,6 +5,10 @@ dist: xenial
 # Language Options
 language: go
 
+# Service Options
+services:
+  - docker
+
 go:
   - 1.9.3
   - 1.9.4
@@ -20,12 +24,12 @@ go:
 before_install:
   - sudo apt-get update -qqy
   - sudo apt-get autoremove -qqy
-  - sudo apt-get install -qqy upx golang-go gccgo
+  - sudo apt-get install -qqy upx golang-go
+  - sudo docker pull junland/gccgo
 
 before_script:
   - go version
-  - gccgo -v
   - go get -t ./...
 
 script:
-  - make travis-sizes
+  - make travis-sizes-nogccgo
