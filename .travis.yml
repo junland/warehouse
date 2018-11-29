@@ -1,6 +1,6 @@
 # Env Options
 sudo: required
-dist: bionic
+dist: xenial
 
 # Language Options
 language: go
