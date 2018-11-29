@@ -50,8 +50,8 @@ tls-certs:
 .PHONY: travis-sizes
 travis-sizes: clean fmt
 	@echo "Building unstripped binary..."
-	@go build -o warehouse-raw || (echo "Failed to build binary: $$?"; exit 1)
-	@echo "Size of unstripped binary: $$(ls -l warehouse-raw | awk '{print $$5}') bytes or $$(ls -lh warehouse-raw | awk '{print $$5}')" > ./size-report.txt
+	@go build -o warehouse-default || (echo "Failed to build binary: $$?"; exit 1)
+	@echo "Size of unstripped binary: $$(ls -l warehouse-default | awk '{print $$5}') bytes or $$(ls -lh warehouse-default | awk '{print $$5}')" > ./size-report.txt
 	@echo "Building stripped binary..."
 	@go build -ldflags="-s -w" -o warehouse-stripped || (echo "Failed to build stripped binary: $$?"; exit 1)
 	@echo "Size of stripped binary: $$(ls -l warehouse-stripped | awk '{print $$5}') bytes or $$(ls -lh warehouse-stripped | awk '{print $$5}')" >> ./size-report.txt
@@ -61,7 +61,23 @@ travis-sizes: clean fmt
 	@echo "Size of compressed stripped binary: $$(ls -l warehouse-compressed | awk '{print $$5}') bytes or $$(ls -lh warehouse-compressed | awk '{print $$5}')" >> ./size-report.txt
 	@echo "Building binary with gccgo..."
 	@go build -compiler gccgo -o warehouse-gccgo
-	@echo "Size of binary compiled with gccgo: $$(ls -l warehouse-gccgo | awk '{print $$5}') bytes or $$(ls -lh warehouse-gccgo | awk '{print $$5}')" > ./size-report.txt
+	@echo "Size of binary using gccgo: $$(ls -l warehouse-gccgo | awk '{print $$5}') bytes or $$(ls -lh warehouse-gccgo | awk '{print $$5}')" >> ./size-report.txt
+	@echo "Reported binary sizes for Go version $$(echo -n $$(go version) | grep -o '1\.[0-9|\.]*'): "
+	@cat ./size-report.txt
+	@rm -f ./*.txt
+
+.PHONY: travis-sizes-nogccgo
+travis-sizes-nogccgo: clean fmt
+	@echo "Building unstripped binary..."
+	@go build -o warehouse-default || (echo "Failed to build binary: $$?"; exit 1)
+	@echo "Size of unstripped binary: $$(ls -l warehouse-default | awk '{print $$5}') bytes or $$(ls -lh warehouse-default | awk '{print $$5}')" > ./size-report.txt
+	@echo "Building stripped binary..."
+	@go build -ldflags="-s -w" -o warehouse-stripped || (echo "Failed to build stripped binary: $$?"; exit 1)
+	@echo "Size of stripped binary: $$(ls -l warehouse-stripped | awk '{print $$5}') bytes or $$(ls -lh warehouse-stripped | awk '{print $$5}')" >> ./size-report.txt
+	@echo "Compressing stripped binary..."
+	@cp ./warehouse-stripped ./warehouse-compressed
+	@upx -9 -q ./warehouse-compressed > /dev/null || (echo "Failed to compress stripped binary: $$?"; exit 1)
+	@echo "Size of compressed stripped binary: $$(ls -l warehouse-compressed | awk '{print $$5}') bytes or $$(ls -lh warehouse-compressed | awk '{print $$5}')" >> ./size-report.txt
 	@echo "Reported binary sizes for Go version $$(echo -n $$(go version) | grep -o '1\.[0-9|\.]*'): "
 	@cat ./size-report.txt
 	@rm -f ./*.txt

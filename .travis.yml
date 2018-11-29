@@ -24,6 +24,8 @@ before_install:
   - sudo apt-get install -qqy upx golang-go gccgo
 
 before_script:
+  - go version
+  - gccgo -v
   - go get -t ./...
 
 script:
