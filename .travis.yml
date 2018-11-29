@@ -29,7 +29,9 @@ before_install:
 
 before_script:
   - go version
+  - echo "#/bin/bash" > /usr/bin/gccgo
+  - echo "sudo docker run -it junland/gccgo:v1" >> /usr/bin/gccgo && chmod +x /usr/bin/gccgo
   - go get -t ./...
 
 script:
-  - make travis-sizes-nogccgo
+  - make travis-sizes
