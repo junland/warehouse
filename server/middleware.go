@@ -52,7 +52,7 @@ func AccessLogger(handler http.Handler, e bool) http.HandlerFunc {
 
 		handler.ServeHTTP(&sw, r)
 
-		duration := time.Now().Sub(startTime)
+		duration := time.Since(startTime)
 
 		if sw.Status == 0 {
 			sw.Status = 200
