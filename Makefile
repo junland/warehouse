@@ -25,6 +25,7 @@ clean:
 	@rm -rf ./warehouse_*
 	@rm -rf ./*.txt
 	@rm -rf ./*.pem
+	@rm -rf ./*.pid
 	@echo "Done cleaning..."
 
 .PHONY: fmt
@@ -33,7 +34,7 @@ fmt:
 	go fmt ./...
 
 .PHONY: test
-test:
+test: clean
 	@echo "Running tests..."
 	go test ./...
 
